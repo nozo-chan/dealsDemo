@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.socialdeal.app.ui.Route.ROUTE_FAVORITES
 import com.socialdeal.app.ui.viewmodel.DealsViewModel
+import com.socialdeal.app.ui.viewmodel.DetailViewModel
 
 object Route {
     const val ROUTE_FAVORITES = "favoriteScreen"
@@ -13,7 +14,8 @@ object Route {
 
 @Composable
     fun AppNavigation(
-    dealsViewModelFactory: DealsViewModel
+    dealsViewModelFactory: DealsViewModel,
+    detailsViewModel: DetailViewModel
     ) {
         val navController = rememberNavController()
         NavHost(navController = navController, startDestination = "cardScreen") {
@@ -24,33 +26,15 @@ object Route {
                     dealsViewModelFactory)
             }
 
-            composable("details/{imageUrl}/{title}/{description}/{city}/{sold}/{price}") { backStackEntry ->
-                val title = backStackEntry.arguments?.getString("title") ?: ""
-                val description = backStackEntry.arguments?.getString("description") ?: ""
-                val imageUrl = backStackEntry.arguments?.getString("imageUrl") ?: ""
-                val city = backStackEntry.arguments?.getString("city") ?: ""
-                val sold = backStackEntry.arguments?.getString("sold") ?: ""
-                val fromPrice = backStackEntry.arguments?.getString("fromPrice") ?: ""
-                val currency = backStackEntry.arguments?.getString("currency") ?: ""
-                val price = backStackEntry.arguments?.getString("price") ?: ""
-
+            composable("details/{unique}") { backStackEntry ->
                 DetailsScreen(
-                    imageUrl = imageUrl ,
-                    title = title,
-                    company = description,
-                    city = city,
-                    sold = sold,
-                    price = price,
-                    currency=currency,
-                    fromPrice= fromPrice,
+                    navController = navController,
                     onBackClick = {navController.popBackStack()},
-                    viewModel = dealsViewModelFactory)
+                    viewModel = detailsViewModel)
             }
 
             composable(ROUTE_FAVORITES) { backStackEntry ->
                 FavoriteDeals(navController, dealsViewModelFactory)
             }
-
-
         }
     }

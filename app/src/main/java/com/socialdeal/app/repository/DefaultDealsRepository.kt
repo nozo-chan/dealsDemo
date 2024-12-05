@@ -2,28 +2,74 @@ package com.socialdeal.app.repository
 
 import com.socialdeal.app.api.DealsProvider
 import com.socialdeal.app.model.APIConstants
-import com.socialdeal.app.model.WrappedDeals
+import com.socialdeal.app.model.WrappedDeal
 import com.socialdeal.app.model.DetailResponse
 import com.socialdeal.app.model.toDeals
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
+class DefaultDealsRepository(private val apiProvider: DealsProvider): DealsRepository {
 
+    private var _deals = MutableStateFlow((emptyList<WrappedDeal>()))
+    override val deals: StateFlow<List<WrappedDeal>> = _deals
 
-class DefaultDealsRepository(private val apiProvider: DealsProvider): GetDealsRepository {
+    override val favorites: StateFlow<List<WrappedDeal>>
+         = _deals.map { it.filter { it.favored } }.stateIn(
+            scope = CoroutineScope(Dispatchers.IO),
+            started = SharingStarted.WhileSubscribed(1000L),
+            initialValue = emptyList()
+        )
 
-    override suspend fun getDeals(): List<WrappedDeals> {
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            _deals.value = getDeals()
+        }
+    }
+
+    private suspend fun getDeals(): List<WrappedDeal> {
         val response = apiProvider.fetchDeals()
          return response.toDeals()
      }
 
-    override suspend fun getFullImageUrl(image:String): String {
-        return apiProvider.getFullImageUrl(image)
+    override suspend fun fetchDealDetails(): DetailResponse =
+         apiProvider.fetchDealDetails()
+
+
+    override fun getImage(imagePath: String):String =
+         APIConstants.IMAGE_BASE_URL + imagePath
+
+
+    override fun toggleFavorite(unique: String) =
+        _deals.update {
+                currentDeal->
+            currentDeal.map {
+                    deal ->
+                if (deal.data.unique == unique) {
+                    deal.copy(favored = !deal.favored )
+                } else {
+                    deal
+                }
+            }
     }
 
-    override suspend fun fetchDealDetails(): DetailResponse {
-        return apiProvider.fetchDealDetails()
-    }
-
-    override fun getImage(image: String):String {
-        return APIConstants.IMAGE_PREFIX + image
-    }
+    override fun toggleCurrency(dollar: Boolean) {
+            _deals.update {
+                it.map { deal ->
+                    val data = deal.data
+                    val prices = data.prices
+                    val price = prices.price
+                    val currency = if(dollar) {
+                        price.currency.copy(symbol = "$", code = "DOL")
+                    } else price.currency.copy(symbol = "€", code = "EUR")
+                    deal.copy(data = data.copy(prices = prices.copy(price = price.copy(currency = currency))))
+                }
+            }
+        }
 }

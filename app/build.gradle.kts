@@ -38,7 +38,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.ktor.client.okhttp)
@@ -56,10 +55,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.coil.compose)
-    coreLibraryDesugaring(libs.android.desugarJdkLibs)
     implementation(libs.coil.network.okhttp)
-
+    implementation(libs.androidx.compose.material.iconsExtended)
     implementation(libs.material)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

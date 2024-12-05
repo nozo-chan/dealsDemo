@@ -1,6 +1,5 @@
 package com.socialdeal.app.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,9 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Euro
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -52,7 +51,6 @@ import coil3.compose.AsyncImage
 import com.socialdeal.app.R
 import com.socialdeal.app.helpers.getFormattedAmount
 import com.socialdeal.app.ui.viewmodel.DealsViewModel
-import java.net.URLEncoder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,8 +60,7 @@ fun DealsScreen(
     dealsViewModel: DealsViewModel = viewModel()
 ) {
     val dealsList by dealsViewModel.deals.collectAsState()
-    val image by dealsViewModel.imageUrl.collectAsState()
-    val maxDeals = dealsList.take(5)
+    val maxAmountOfDeals = dealsList.take(20)
 
     Scaffold(
         topBar = {
@@ -78,6 +75,14 @@ fun DealsScreen(
                             contentDescription = "favoriteList"
                         )
                     }
+                    IconButton(
+                        onClick = { dealsViewModel.toggleCurrency() })
+                    {
+                        Icon(
+                            imageVector = Icons.Default.Euro,
+                            contentDescription = "Settings"
+                        )
+                    }
                 }
             )
         },
@@ -86,9 +91,8 @@ fun DealsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(MaterialTheme.colorScheme.background)
         ) {
-            if (maxDeals.isEmpty() && image.isEmpty()) {
+            if (maxAmountOfDeals.isEmpty()) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center),
                     color = MaterialTheme.colorScheme.primary
@@ -100,23 +104,21 @@ fun DealsScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    maxDeals.forEach { _ ->
-                        items(maxDeals) { deal ->
-                            val priceFrom = deal.deal.prices.from_price?.amount ?: 0
+                    items(maxAmountOfDeals) { deal ->
+                            val priceFrom = deal.data.prices.from_price?.amount ?: 0
                             CustomCard(
-                                imageUrl = dealsViewModel.getImage(deal.deal.image),
-                                title = deal.deal.title,
-                                description = deal.deal.company,
+                                imageUrl = dealsViewModel.getImageUri(deal.data.image),
+                                title = deal.data.title,
+                                description = deal.data.company,
                                 fromPrice = getFormattedAmount(priceFrom),
-                                currency = deal.deal.prices.price.currency.code,
-                                price = getFormattedAmount(deal.deal.prices.price.amount),
-                                sold = deal.deal.sold_label,
-                                city = deal.deal.city,
-                                favorite = deal.favorites,
-                                onFavoriteToggle = { dealsViewModel.toggleFavorites(deal.deal.unique) },
+                                currency = deal.data.prices.price.currency.code,
+                                price = getFormattedAmount(deal.data.prices.price.amount),
+                                sold = deal.data.sold_label,
+                                city = deal.data.city,
+                                favorite = deal.favored,
+                                onFavoriteToggle = { dealsViewModel.toggleFavorite(deal.data.unique) },
                                 navController = navController
                             )
-                        }
                     }
                     item {
                         Text(
@@ -149,18 +151,15 @@ fun CustomCard(
     onFavoriteToggle: () -> Unit,
     navController: NavController
 ) {
-
-    val encodedImageUrl = URLEncoder.encode(imageUrl, "UTF-8")
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable {
-                navController.navigate("details/$encodedImageUrl/$title/$description/$city/$sold/${price}")
+                // Hard coded unique? does not match details unique?
+                navController.navigate("details/x6ji36jvyi4mj9fk")
             },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
         Column(
@@ -174,7 +173,6 @@ fun CustomCard(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-
                 Box {
                     AsyncImage(
                         model = imageUrl,
@@ -201,8 +199,6 @@ fun CustomCard(
                         )
                     }
                 }
-
-                // Text Content
                 Column(
                     modifier = Modifier
                         .padding(16.dp)
@@ -220,7 +216,6 @@ fun CustomCard(
                         text = description,
                         style = TextStyle(
                             fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -229,7 +224,6 @@ fun CustomCard(
                         text = city,
                         style = TextStyle(
                             fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -243,7 +237,7 @@ fun CustomCard(
                         Text(
                             text = "Sold: $sold",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
+                            color = Color.Cyan
                         )
 
                         Row(verticalAlignment = Alignment.CenterVertically) {

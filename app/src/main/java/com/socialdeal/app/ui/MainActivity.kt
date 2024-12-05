@@ -5,27 +5,30 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.material3.MaterialTheme
 import com.socialdeal.app.DealsApp
-import com.socialdeal.app.api.ApiProvider
-import com.socialdeal.app.repository.DefaultDealsRepository
+import com.socialdeal.app.ui.theme.MyApplicationTheme
 import com.socialdeal.app.ui.viewmodel.DealsViewModel
 import com.socialdeal.app.ui.viewmodel.DealsViewModelFactory
+import com.socialdeal.app.ui.viewmodel.DetailViewModel
+import com.socialdeal.app.ui.viewmodel.DetailsViewModelFactory
 
 class MainActivity: ComponentActivity() {
-    private val myViewModel: DealsViewModel by viewModels {dealsViewModelFactory}
+    private val dealsViewModel: DealsViewModel by viewModels {dealsViewModelFactory}
+    private val detailsViewModel: DetailViewModel by viewModels { detailsViewModelFactory }
     protected fun application(): DealsApp = application as DealsApp
 
     private val dealsViewModelFactory: DealsViewModelFactory
         get() = DealsViewModelFactory(application())
 
+    private val detailsViewModelFactory: DetailsViewModelFactory
+        get() = DetailsViewModelFactory(application())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            // Use MaterialTheme for consistent styling
-            MaterialTheme {
-                AppNavigation(myViewModel)
+            MyApplicationTheme  {
+                AppNavigation(dealsViewModel,detailsViewModel)
             }
         }
 

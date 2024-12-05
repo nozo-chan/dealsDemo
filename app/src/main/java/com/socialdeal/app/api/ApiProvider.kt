@@ -20,10 +20,8 @@ class ApiProvider: DealsProvider {
                 })
             }
         }
-        return try {
-            client.get(APIConstants.API_URL).body()
-          } finally {
-            client.close()
+        return client.use {
+            it.get(APIConstants.API_URL).body()
         }
     }
 
@@ -35,18 +33,8 @@ class ApiProvider: DealsProvider {
                 })
             }
         }
-
-        return try {
-            client.get(APIConstants.DETAILS_URL).body()
-        } finally {
-            client.close()
+        return client.use {
+            it.get(APIConstants.DETAILS_URL).body()
         }
     }
-
-    override suspend fun getFullImageUrl(image:String): String {
-        return APIConstants.IMAGE_PREFIX + image
-    }
-
-
-
 }

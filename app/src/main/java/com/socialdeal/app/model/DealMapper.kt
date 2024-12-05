@@ -1,5 +1,5 @@
 package com.socialdeal.app.model
 
-internal fun ApiResponse.toDeals(): List<WrappedDeals> {
-    return deals.map { WrappedDeals(it) }
+internal fun ApiResponse.toDeals(): List<WrappedDeal> {
+    return deals.map { WrappedDeal(it) }
 }
