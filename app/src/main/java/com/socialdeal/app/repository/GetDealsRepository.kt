@@ -9,4 +9,5 @@ interface GetDealsRepository {
     suspend fun getDeals(): List<WrappedDeals>
     suspend fun fetchDealDetails(): DetailResponse
     suspend fun getFullImageUrl(image:String): String
+    fun getImage(image: String):String
 }

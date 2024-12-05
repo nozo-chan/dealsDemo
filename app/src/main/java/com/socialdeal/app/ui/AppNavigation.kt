@@ -5,7 +5,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.socialdeal.app.ui.Route.ROUTE_FAVORITES
-import com.socialdeal.app.ui.Route.ROUTE_SETTINGS
 import com.socialdeal.app.ui.viewmodel.DealsViewModel
 
 object Route {

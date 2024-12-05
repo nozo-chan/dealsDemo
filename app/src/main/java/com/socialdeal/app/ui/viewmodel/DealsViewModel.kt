@@ -1,21 +1,14 @@
 package com.socialdeal.app.ui.viewmodel
 import kotlinx.coroutines.flow.map
 
-import android.util.Log
-import androidx.core.text.HtmlCompat
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.socialdeal.app.model.APIConstants
-import com.socialdeal.app.model.Currency
-import com.socialdeal.app.model.PriceDetail
 import com.socialdeal.app.model.WrappedDeals
 import com.socialdeal.app.repository.GetDealsRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -52,7 +45,7 @@ class DealsViewModel(
     }
 
     fun getImage(image:String): String {
-        return APIConstants.IMAGE_PREFIX + image
+        return getDealsRepository.getImage(image)
     }
 
     fun getFavorites() = deals.map { it.filter { it.favorites } }.stateIn(
@@ -60,7 +53,6 @@ class DealsViewModel(
         started = SharingStarted.WhileSubscribed(1000L),
         initialValue = emptyList()
     )
-
 
     fun toggleFavorites(unique: String) {
         _deals.update {
