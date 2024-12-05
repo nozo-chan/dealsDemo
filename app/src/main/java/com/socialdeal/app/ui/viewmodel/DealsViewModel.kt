@@ -2,14 +2,20 @@ package com.socialdeal.app.ui.viewmodel
 import kotlinx.coroutines.flow.map
 
 import android.util.Log
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.socialdeal.app.model.APIConstants
+import com.socialdeal.app.model.Currency
+import com.socialdeal.app.model.PriceDetail
 import com.socialdeal.app.model.WrappedDeals
 import com.socialdeal.app.repository.GetDealsRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,11 +45,22 @@ class DealsViewModel(
         }
     }
 
+    private fun getDealDetails() {
+        viewModelScope.launch {
+            _details.value = getDealsRepository.fetchDealDetails().description
+        }
+    }
+
+    fun getImage(image:String): String {
+        return APIConstants.IMAGE_PREFIX + image
+    }
+
     fun getFavorites() = deals.map { it.filter { it.favorites } }.stateIn(
         scope = viewModelScope,
-    started = SharingStarted.WhileSubscribed(1000L),
-    initialValue = emptyList()
+        started = SharingStarted.WhileSubscribed(1000L),
+        initialValue = emptyList()
     )
+
 
     fun toggleFavorites(unique: String) {
         _deals.update {
@@ -57,19 +74,7 @@ class DealsViewModel(
                 }
             }
         }
-
     }
-
-    private fun getDealDetails() {
-        viewModelScope.launch {
-            _details.value = getDealsRepository.fetchDealDetails().description
-        }
-    }
-
-    fun getImage(image:String): String {
-        return APIConstants.IMAGE_PREFIX + image
-    }
-
 }
 
 

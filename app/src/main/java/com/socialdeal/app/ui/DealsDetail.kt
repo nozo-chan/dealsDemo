@@ -1,12 +1,13 @@
 package com.socialdeal.app.ui
 
-
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
@@ -25,11 +27,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.socialdeal.app.R
-import com.socialdeal.app.helpers.removeHtmlTagsWithRegex
+import com.socialdeal.app.helpers.stripHtmlTags
 import com.socialdeal.app.ui.viewmodel.DealsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,10 +40,12 @@ import com.socialdeal.app.ui.viewmodel.DealsViewModel
 fun DetailsScreen(
     imageUrl: String,
     title: String,
-    description: String,
+    company: String,
     city:String,
     sold: String,
-    price: Int,
+    currency:String,
+    fromPrice:String,
+    price: String,
     onBackClick: () -> Unit,
     viewModel: DealsViewModel,
 ) {
@@ -48,7 +53,9 @@ fun DetailsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Item Details") },
+                title = { Text(
+                    text = company
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { onBackClick() }) {
                         Icon(
@@ -76,10 +83,9 @@ fun DetailsScreen(
                         .fillMaxWidth()
                         .height(100.dp),
                     contentScale = ContentScale.Crop,
-                    placeholder = placeholder, // Add a drawable resource
-                    error = placeholder // Error fallback
+                    placeholder = placeholder,
+                    error = placeholder
                 )
-
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -93,7 +99,7 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = description,
+                    text = company,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontSize = 16.sp,
                         color = Color.Gray
@@ -105,17 +111,30 @@ fun DetailsScreen(
                     text = city,
                     style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
                 )
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = sold,
                     style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
                 )
+                Spacer(modifier = Modifier.height(10.dp))
 
-                Text(
-                    text = price.toString(),
-                    style = TextStyle(fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f))
-                )
-
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = "${currency}${fromPrice}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        textDecoration = TextDecoration.LineThrough,
+                        color = Color.Gray
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "${currency}${price}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Green,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     text = "Details:",
                     style = MaterialTheme.typography.bodyMedium.copy(
@@ -126,10 +145,11 @@ fun DetailsScreen(
                 )
 
                 Text(
-                    text = dealDetails.removeHtmlTagsWithRegex(),
+                    text = stripHtmlTags(dealDetails),
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
     )
