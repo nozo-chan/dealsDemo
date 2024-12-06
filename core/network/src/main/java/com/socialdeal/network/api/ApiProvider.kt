@@ -1,8 +1,9 @@
-package com.socialdeal.app.api
+package com.socialdeal.network.api
 
-import com.socialdeal.app.model.APIConstants
-import com.socialdeal.app.model.DetailResponse
-import com.socialdeal.app.model.ApiResponse
+
+import com.socialdeal.network.model.APIConstants
+import com.socialdeal.network.model.ApiResponse
+import com.socialdeal.network.model.DetailResponse
 import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.*

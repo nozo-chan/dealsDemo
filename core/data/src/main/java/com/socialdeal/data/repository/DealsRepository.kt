@@ -1,7 +1,8 @@
-package com.socialdeal.app.repository
+package com.socialdeal.data.repository
 
-import com.socialdeal.app.model.WrappedDeal
-import com.socialdeal.app.model.DetailResponse
+
+import com.socialdeal.network.model.DetailResponse
+import com.socialdeal.network.model.WrappedDeal
 import kotlinx.coroutines.flow.StateFlow
 
 interface DealsRepository {

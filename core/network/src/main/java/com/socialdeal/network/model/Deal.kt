@@ -1,4 +1,4 @@
-package com.socialdeal.app.model
+package com.socialdeal.network.model
 
 import kotlinx.serialization.Serializable
 

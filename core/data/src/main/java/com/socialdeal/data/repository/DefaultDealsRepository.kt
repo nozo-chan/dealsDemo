@@ -1,10 +1,10 @@
-package com.socialdeal.app.repository
+package com.socialdeal.data.repository
 
-import com.socialdeal.app.api.DealsProvider
-import com.socialdeal.app.model.APIConstants
-import com.socialdeal.app.model.WrappedDeal
-import com.socialdeal.app.model.DetailResponse
-import com.socialdeal.app.model.toDeals
+import com.socialdeal.data.mapper.toDeals
+import com.socialdeal.network.api.DealsProvider
+import com.socialdeal.network.model.APIConstants
+import com.socialdeal.network.model.DetailResponse
+import com.socialdeal.network.model.WrappedDeal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

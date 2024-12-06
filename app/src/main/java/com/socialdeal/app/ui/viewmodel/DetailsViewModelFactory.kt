@@ -3,7 +3,8 @@ package com.socialdeal.app.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.socialdeal.app.DealsApp
-import com.socialdeal.app.repository.DefaultDealsRepository
+import com.socialdeal.data.repository.DefaultDealsRepository
+
 
 class DetailsViewModelFactory(private val application: DealsApp) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

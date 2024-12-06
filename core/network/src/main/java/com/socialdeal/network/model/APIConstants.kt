@@ -1,4 +1,4 @@
-package com.socialdeal.app.model
+package com.socialdeal.network.model
 
 object APIConstants {
     const val API_URL = "https://media.socialdeal.nl/demo/deals.json"

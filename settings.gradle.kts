@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "SocialDeal"
 include(":app")
+include(":core")
+include(":core:data")
+include(":core:network")

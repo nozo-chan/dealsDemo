@@ -1,8 +1,8 @@
 package com.socialdeal.app
 
 import android.app.Application
-import com.socialdeal.app.api.ApiProvider
-import com.socialdeal.app.repository.DefaultDealsRepository
+import com.socialdeal.data.repository.DefaultDealsRepository
+import com.socialdeal.network.api.ApiProvider
 
 class DealsApp: Application() {
 

@@ -1,8 +1,9 @@
 package com.socialdeal.app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.socialdeal.app.model.WrappedDeal
-import com.socialdeal.app.repository.DealsRepository
+import com.socialdeal.data.repository.DealsRepository
+import com.socialdeal.network.model.WrappedDeal
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
